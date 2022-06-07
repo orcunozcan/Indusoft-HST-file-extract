@@ -15,7 +15,7 @@ hst_files = [os.path.join(hst_folder_path,f) for f in os.listdir(hst_folder_path
 bar = tqdm(hst_files,unit="file")
 for file in bar:
     bar.set_description("File is processing : {}".format(file))
-    subprocess.call([hst2txt_exe_path,file,"/l:{}".format(cyclic),hst_seperator],
+    subprocess.call([hst2txt_exe_path,file,"/l:{}".format(cyclic),hst_seperator,"/e"],
     stdout=subprocess.DEVNULL,
     stderr=subprocess.STDOUT)
 
