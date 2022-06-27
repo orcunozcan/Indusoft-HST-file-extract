@@ -2,9 +2,10 @@ import os
 import subprocess
 from tqdm import tqdm
 import pandas as pd
+import shutil
 
-hst_folder_path = "C:\\Users\\Orcun\\Desktop\\Proje\\CM-APM\\Automation Backup\\Colakoglu_Compresor_Tracing\\Hst\\" #HST Folder Location
-hst2txt_exe_path = hst_folder_path + "HST2TXT.exe" #hst2txt.exe Location
+hst_folder_path = "D:\\Proje\\Çolakoğlu\\APM\\Automation Backups\\Su Tesisi Indusoft\\Hst" #HST Folder Location
+hst2txt_exe_path = "HST2TXT.exe" #hst2txt.exe Location
 cyclic = 3600 #SECOND
 search_filter = "INGERSOLLAND" #SEARCH
 hst_seperator = "\t" #Hst output csv seperator
@@ -47,7 +48,34 @@ firstDate = os.path.basename(csv_file_name[0].replace(".csv",""))
 lastDate = os.path.basename(csv_file_name[-1].replace(".csv",""))
 df.to_csv("{}\\{}_{}.csv".format(hst_folder_path,firstDate,lastDate),index=False)
 
+df = pd.concat([df.iloc[:,0:3],df.iloc[:,3:].sort_index(axis="columns")],axis="columns")
 filtered_data = [f for f in df.columns if search_filter.upper() in f.upper()]
 filtered_data = ["Date","Time","Date-Time"] + filtered_data
-
 df[filtered_data].to_csv("{}\\{}-{}_{}.csv".format(hst_folder_path,search_filter,firstDate,lastDate),index=False)
+
+try:
+    os.mkdir(os.path.join(hst_folder_path,"HDR_FILES"))
+except:
+    shutil.rmtree(os.path.join(hst_folder_path,"HDR_FILES"), ignore_errors=True)
+    os.mkdir(os.path.join(hst_folder_path,"HDR_FILES"))
+finally:
+    for hdr in hdr_files:
+        shutil.move(hdr,os.path.join(hst_folder_path,"HDR_FILES"))
+
+try:
+    os.mkdir(os.path.join(hst_folder_path,"TXT_FILES"))
+except:
+    shutil.rmtree(os.path.join(hst_folder_path,"TXT_FILES"), ignore_errors=True)
+    os.mkdir(os.path.join(hst_folder_path,"TXT_FILES"))
+finally:
+    for txt in txt_files:
+        shutil.move(txt,os.path.join(hst_folder_path,"TXT_FILES"))
+
+try:
+    os.mkdir(os.path.join(hst_folder_path,"CSV_FILES"))
+except:
+    shutil.rmtree(os.path.join(hst_folder_path,"CSV_FILES"), ignore_errors=True)
+    os.mkdir(os.path.join(hst_folder_path,"CSV_FILES"))
+finally:
+    for csv in csv_file_name:
+        shutil.move(csv,os.path.join(hst_folder_path,"CSV_FILES"))
